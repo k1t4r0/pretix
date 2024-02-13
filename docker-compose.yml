@@ -1,0 +1,49 @@
+version: '3'
+
+services:
+
+  pretix:
+    image: 'pretix/standalone:stable'
+    container_name: pretix_app
+    restart: always
+    depends_on:
+      - db
+      - redis
+    volumes:
+      - ./docker/pretix/data:/data
+      - ./docker/pretix/conf:/etc/pretix
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=web"
+      - "traefik.frontend.rule=Host:tickets.chaostreff-flensburg.de"
+      - "traefik.port=80"
+    networks:
+      - web
+      - backend
+
+  db:
+    image: postgres:12-alpine
+    container_name: database
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=pretix
+      - POSTGRES_PASSWORD=pretix
+      - POSTGRES_DB=pretix
+    volumes:
+      - ./docker/scripts/:/docker-entrypoint-initdb.d/
+    networks:
+      - backend
+
+
+  redis:
+    image: redis:latest
+    restart: always
+    networks:
+      - backend
+
+networks:
+  web:
+    external: true
+  backend:
+    external: false

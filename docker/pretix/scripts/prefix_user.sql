@@ -1,0 +1,3 @@
+CREATE USER pretix WITH PASSWORD 'pretix';
+
+GRANT ALL PRIVILEGES ON DATABASE pretix TO pretix;
