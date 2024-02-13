@@ -12,11 +12,8 @@ services:
     volumes:
       - ./docker/pretix/data:/data
       - ./docker/pretix/conf:/etc/pretix
-    labels:
-      - "traefik.enable=true"
-      - "traefik.docker.network=web"
-      - "traefik.frontend.rule=Host:tickets.chaostreff-flensburg.de"
-      - "traefik.port=80"
+    ports:
+      - "8000:80"
     networks:
       - web
       - backend
